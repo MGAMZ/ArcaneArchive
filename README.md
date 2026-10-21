@@ -1,4 +1,11 @@
-# Arcaive: Arcane's Archive
+<p align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="assets/motto-dark.svg">
+    <img src="assets/motto-light.svg" alt="定不辱应龙之名" width="100%">
+  </picture>
+</p>
+
+# Arcaive: The Arcane's Archive
 
 对《明日方舟：终末地》干员诀（本名李织烟）在森空岛终末地 wiki 全站文本的爬取与分析
 
@@ -7,6 +14,7 @@
 ## 目录结构
 
 - `诀-剧情交集全量考据.md`：字如其名
+- `assets/`：README 顶部的格言横幅
 - `corpus/`：全站语料快照
 - `evidence/`：检索命中、语音抄录与图片文字转录
 - `tools/`：采集、抽取、检索与汇总脚本
