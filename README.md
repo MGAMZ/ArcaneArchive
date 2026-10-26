@@ -25,6 +25,16 @@ https://wiki.skland.com/endfield
 
 2026-10-17采集得：终末地百科 2288 条、游戏攻略辑 53 条、情报档案库 137 条。
 
+## 可信数据源
+
+请注意部分百科类数据源通常包含整个游戏的更多信息，覆盖方方面面，而不仅限于诀（李织烟）相关的内容，这些信息或许是有利于构建围绕李织烟展开的介绍的。
+
+[萌娘百科-诀](https://mzh.moegirl.org.cn/index.php?title=%E8%AF%80)
+[百度百科-诀](https://baike.baidu.com/item/%E8%AF%80/68217227?fromModule=lemma_sense-layer#viewPageContent)
+[《明日方舟：终末地》WIKI-森空岛](https://wiki.skland.com/endfield/detail?mainTypeId=1&subTypeId=1&gameEntryId=1675&header=0)
+[终末地WIKI-诀](https://www.fz.wiki/wiki/%E5%B9%B2%E5%91%98/%E8%AF%80)
+[私有仓库](../ArcaneArchive/)
+
 ## 启动
 
 基于 Node.js 运行
