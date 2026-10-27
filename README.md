@@ -127,10 +127,10 @@ https://www.fz.wiki/
 
 ## 站外对照
 
-[萌娘百科-诀](https://mzh.moegirl.org.cn/index.php?title=%E8%AF%80)
-[百度百科-诀](https://baike.baidu.com/item/%E8%AF%80/68217227?fromModule=lemma_sense-layer#viewPageContent)
-[《明日方舟：终末地》WIKI-森空岛](https://wiki.skland.com/endfield/detail?mainTypeId=1&subTypeId=1&gameEntryId=1675&header=0)
-[终末地WIKI-诀](https://www.fz.wiki/wiki/%E5%B9%B2%E5%91%98/%E8%AF%80)
+[萌娘百科-诀（中等置信度）](https://mzh.moegirl.org.cn/index.php?title=%E8%AF%80)
+[百度百科-诀 （中等置信度）](https://baike.baidu.com/item/%E8%AF%80/68217227?fromModule=lemma_sense-layer#viewPageContent)
+[《明日方舟：终末地》WIKI-森空岛（最高置信度）](https://wiki.skland.com/endfield/detail?mainTypeId=1&subTypeId=1&gameEntryId=1675&header=0)
+[终末地WIKI-诀（高置信度）](https://www.fz.wiki/wiki/%E5%B9%B2%E5%91%98/%E8%AF%80)
 
 ## 已知缺口
 
