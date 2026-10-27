@@ -32,28 +32,39 @@ node -e "const {events}=require('./data/jue_timeline.json');console.log(events.l
 ```bash
 node tools/analyze.js
 node tools/evidence.js
+python3 tools/index.py
 ```
+
+`tools/index.py` 直接读 `corpus/` 下两份压缩包，重建 `data/source_index.tsv`，不需要解包。
 
 采集脚本依赖 Playwright 与一份无头 Chromium。两者的程序路径写在 `harvest.js` 与 `bulk.js` 开头，换机器时改成该机上的路径。
 
 ## 目录结构
 
 - `assets/`：README 顶部的格言横幅
-- `corpus/`：森空岛全站语料快照
-- `data/`：结构化时间线
-- `evidence/`：检索命中、条目索引、语音抄录与图片文字转录
+- `corpus/`：两层语料快照，森空岛与 fz.wiki 各一份
+- `data/`：结构化时间线与合一出处索引
+- `evidence/`：检索命中、语音抄录与图片文字转录
 - `reports/`：两份考据报告
-- `tools/`：采集、抽取、检索与汇总脚本
+- `tools/`：采集、抽取、检索、索引与汇总脚本
 
 ## 数据结构
 
 ### 语料快照
 
-`corpus/skland-endfield-wiki_2026-10-17.tar.gz` 解包后有三个目录。`raw/` 存条目详情接口的原样返回，`txt/` 存同名纯文本，两处的文件名都是条目号，共 2478 条。`data/` 存采集时截获的 15 份列表类接口。快照采集于 2026 年 10 月 17 日，此后的游戏内容不在其中。
+两层语料各存一个压缩包，文件名带采集日。
 
-### 条目清单
+`corpus/skland-endfield-wiki_2026-10-17.tar.gz` 解包后有 `raw/`、`txt/` 与 `data/` 三个目录。`raw/` 存条目详情接口的原样返回，`txt/` 存同名纯文本，两处的文件名都是条目号，共 2478 条。`data/` 存采集时截获的 15 份列表类接口。
 
-`tools/items_all.json` 是长度 2478 的数组，每条六字段：`itemId` 条目号，`name` 标题，`mainTypeId` 与 `subTypeId` 分类编号，`subName` 分类名，`lang` 语言。报告里的「条目2372」就是这个 `itemId`，抓到 `txt/2372.txt` 即可读原文。
+`corpus/fzwiki-2026-10-27.tar.gz` 解包后有 `prts-raw/`、`prts-text/`、`story-raw/` 与 `story-text/` 四个目录，目录名写出内容类别与文件形态。`prts-raw/` 与 `prts-text/` 各 549 份，对应 PRTS 记录，前者是接口原样 JSON，后者是展开后的文本。`story-raw/` 与 `story-text/` 各 745 份，对应任务、干员与活动页面，`story` 指剧情类页面。文件名里的斜线改为双下划线，`story-text/任务__第二章__谈剑问迹.txt` 即页面路径 `任务/第二章/谈剑问迹`。
+
+森空岛一层采集于 2026 年 10 月 17 日，fz 一层采集于 2026 年 10 月 27 日，此后的游戏内容不在其中。
+
+### 条目清单与合一索引
+
+`tools/items_all.json` 是长度 2478 的数组，每条六字段：`itemId` 条目号，`name` 标题，`mainTypeId` 与 `subTypeId` 分类编号，`subName` 分类名，`lang` 语言。
+
+`data/source_index.tsv` 把两层语料合到一张表里，共 3771 行，其中森空岛 2478 行、fz 1293 行。七列依次为 `source` 来源、`key` 编号或页面路径、`title` 标题、`category` 分类、`corpus` 压缩包名、`member` 包内路径、`url` 原页面地址。时间线里每条证据的 `source` 与 `id` 就是前两列，凭这两列可以在表中查到标题与原文位置。
 
 ### 文本格式
 
@@ -75,13 +86,12 @@ node tools/evidence.js
 | `evidence` | 出处数组 |
 | `confidence` | A 为原文写明年份，B 为多条互证，C 为单条线索或站外资料 |
 
-出处有两种形态。森空岛条目写成 `{"itemId":"2372","section":"档案库·中枢档案·宏山科学院","quote":"..."}`。fz 页面写成 `{"source":"fz","page":"任务/第二章/谈剑问迹","section":"剧情对白","quote":"..."}`。`quote` 一律是语料原文的逐字片段，报告里的每条引文都用它回查。
+出处统一为六字段。森空岛条目写成 `{"source":"skland","id":"2372","title":"宏山科学院","category":"档案库","section":"档案库·中枢档案·宏山科学院","quote":"..."}`。fz 页面写成 `{"source":"fz","id":"任务/第二章/谈剑问迹","title":"谈剑问迹","category":"任务","section":"剧情对白","quote":"..."}`。`title` 与 `category` 与 `data/source_index.tsv` 一致，`quote` 一律是语料原文的逐字片段，报告里的每条引文都用它回查。
 
 ### 证据文件
 
 | 文件 | 内容 |
 |---|---|
-| `evidence/item_index.tsv` | 2478 行，四列，依次为条目号、主分类、子分类、标题 |
 | `evidence/evidence_mentions.txt` | 全语料中三种词形的命中，分叙事类、仅数值与攻略类、正文未提名但链接指向诀的条目三节 |
 | `evidence/jue_voices_cn.txt` | 诀的中文语音逐句抄录，按语音类别分组 |
 | `evidence/ocr_transcripts.md` | 诀页与个别干员页的图片文字转录，方法与范围写在文件开头 |
@@ -92,6 +102,8 @@ node tools/evidence.js
 
 检索与汇总也分两步。`analyze.js` 在全部文本里找「诀」「李织烟」「织烟」三种词形，剔除技能名与常用词造成的误命中，输出命中位置与所在板块。`evidence.js` 把命中整理成三节证据文件，并补上「正文没提名字、只靠词条链接指过来」的那一类。
 
+索引单独一步。`index.py` 枚举两份压缩包里的成员，与条目清单的标题合并，写出 `data/source_index.tsv`。时间线的证据、报告的引文与这份索引用同一套编号，三者对得上。
+
 | 脚本 | 作用 |
 |---|---|
 | `harvest.js` | 打开站点首页，记录全部成功返回的 wiki 接口 JSON |
@@ -99,12 +111,13 @@ node tools/evidence.js
 | `extract.js` | 把详情接口的块结构转换为带章与板块标记的纯文本 |
 | `analyze.js` | 在全部文本中检索三种词形，剔除技能名与常用词的误命中 |
 | `evidence.js` | 把命中结果整理为证据文件，并补上词条交叉引用一节 |
+| `index.py` | 由两份语料压缩包生成合一出处索引 |
 | `images.js` | 清点某个条目中的全部图片地址及其所在板块 |
 | `dlimg.js` | 按板块下载承载文字的图片，供转录使用 |
 
 ## 数据来源与时效
 
-森空岛 wiki 的语料采集于 2026 年 10 月 17 日，共 2478 条。fz.wiki 的语料采集于 2026 年 10 月 27 日，含 PRTS 记录 549 页、任务 572 页、干员 35 页、活动 138 页。fz 这一层只留在工作目录，没有入库，时间线里 21 条 fz 出处要回查时得先重跑采集。
+森空岛 wiki 的语料采集于 2026 年 10 月 17 日，共 2478 条，存于 `corpus/skland-endfield-wiki_2026-10-17.tar.gz`。fz.wiki 的语料采集于 2026 年 10 月 27 日，含 PRTS 记录 549 页、任务 572 页、干员 35 页、活动 138 页，存于 `corpus/fzwiki-2026-10-27.tar.gz`。两层都在仓内，按索引的 `corpus` 与 `member` 两列即可取到任意一条原文。
 
 快照冻结于采集日。凡「站内没有」一类判断，都以此日为界。
 

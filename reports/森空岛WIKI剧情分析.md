@@ -401,8 +401,8 @@
 ## 八、附：数据与工具
 
 - **语料归档**：`corpus/skland-endfield-wiki_2026-10-17.tar.gz`（2478 条目原始 JSON＋抽取文本＋全站目录）
-- **证据**：`evidence/evidence_mentions.txt`（命中原文汇总）、`evidence/jue_voices_cn.txt`（82 条中文语音）、`evidence/item_index.tsv`（2478 条目索引）、`evidence/ocr_transcripts.md`（图片承载文本转录）
-- **脚本**：`tools/`（`harvest.js` 采集、`bulk.js` 批量、`extract.js` 抽取、`analyze.js` 检索、`evidence.js` 汇总、`images.js` 图片清点、`dlimg.js` 图片下载、`items_all.json` 全量索引）
+- **证据**：`evidence/evidence_mentions.txt`（命中原文汇总）、`evidence/jue_voices_cn.txt`（82 条中文语音）、`data/source_index.tsv`（两层语料共 3771 条出处索引）、`evidence/ocr_transcripts.md`（图片承载文本转录）
+- **脚本**：`tools/`（`harvest.js` 采集、`bulk.js` 批量、`extract.js` 抽取、`analyze.js` 检索、`evidence.js` 汇总、`index.py` 建索引、`images.js` 图片清点、`dlimg.js` 图片下载、`items_all.json` 全量索引）
 
 ---
 
