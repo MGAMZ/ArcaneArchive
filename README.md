@@ -7,7 +7,7 @@
 
 # Arcaive: The Arcane's Archive
 
-对《明日方舟：终末地》干员诀（本名李织烟）的剧情考据仓。仓内保存一份森空岛终末地 wiki 的全站语料快照，以及在快照上完成的检索结果、结构化时间线与两份长篇报告。
+对《明日方舟：终末地》干员诀（本名李织烟）的剧情考据仓。仓内保存森空岛终末地 wiki 的全站语料快照、fz.wiki 的剧情页与 Baker 通信页，以及在语料上完成的检索结果、结构化时间线与两份长篇报告。
 
 > 警告：含《明日方舟：终末地》剧透
 
@@ -35,14 +35,14 @@ node tools/evidence.js
 python3 tools/index.py
 ```
 
-`tools/index.py` 直接读 `corpus/` 下两份压缩包，重建 `data/source_index.tsv`，不需要解包。
+`tools/index.py` 直接读 `corpus/` 下三份压缩包，重建 `data/source_index.tsv`，不需要解包。
 
 采集脚本依赖 Playwright 与一份无头 Chromium。两者的程序路径写在 `harvest.js` 与 `bulk.js` 开头，换机器时改成该机上的路径。
 
 ## 目录结构
 
 - `assets/`：README 顶部的格言横幅
-- `corpus/`：两层语料快照，森空岛与 fz.wiki 各一份
+- `corpus/`：三层语料快照，森空岛、fz.wiki 剧情页与 fz.wiki Baker 页各一份
 - `data/`：结构化时间线与合一出处索引
 - `evidence/`：检索命中、语音抄录与图片文字转录
 - `reports/`：两份考据报告
@@ -52,23 +52,29 @@ python3 tools/index.py
 
 ### 语料快照
 
-两层语料各存一个压缩包，文件名带采集日。
+语料分三层，各存一个压缩包，文件名带采集日。
 
 `corpus/skland-endfield-wiki_2026-10-17.tar.gz` 解包后有 `raw/`、`txt/` 与 `data/` 三个目录。`raw/` 存条目详情接口的原样返回，`txt/` 存同名纯文本，两处的文件名都是条目号，共 2478 条。`data/` 存采集时截获的 15 份列表类接口。
 
 `corpus/fzwiki-2026-10-27.tar.gz` 解包后有 `prts-raw/`、`prts-text/`、`story-raw/` 与 `story-text/` 四个目录，目录名写出内容类别与文件形态。`prts-raw/` 与 `prts-text/` 各 549 份，对应 PRTS 记录，前者是接口原样 JSON，后者是展开后的文本。`story-raw/` 与 `story-text/` 各 745 份，对应任务、干员与活动页面，`story` 指剧情类页面。文件名里的斜线改为双下划线，`story-text/任务__第二章__谈剑问迹.txt` 即页面路径 `任务/第二章/谈剑问迹`。
 
-森空岛一层采集于 2026 年 10 月 17 日，fz 一层采集于 2026 年 10 月 27 日，此后的游戏内容不在其中。
+`corpus/fzwiki-baker-2026-11-02.tar.gz` 解包后有 `baker-raw/` 与 `baker-text/` 两个目录，各 242 份，对应 fz.wiki 的 Baker 命名空间。前者是接口原样 JSON，后者是按话题与消息顺序展开的文本。Baker 页覆盖事件群聊、干员频道、剧情角色频道与表情，文件名同样把斜线改为双下划线，`baker-text/Baker__事件__应龙特勤队.txt` 即页面路径 `Baker/事件/应龙特勤队`。
+
+重新打包 Baker 层时用 `tar czf corpus/fzwiki-baker-2026-11-02.tar.gz --hard-dereference -C tmp/fzwiki baker-raw baker-text`。本机 WSL 的 `/mnt/f` 会给不同文件复用 inode，普通 `tar` 会把部分 `baker-text` 成员误存成指向 `baker-raw` 的硬链接（size 0），`--hard-dereference` 可避开。
+
+森空岛一层采集于 2026 年 10 月 17 日，fz 剧情一层采集于 2026 年 10 月 27 日，fz Baker 一层采集于 2026 年 11 月 2 日，此后的游戏内容不在其中。
 
 ### 条目清单与合一索引
 
 `tools/items_all.json` 是长度 2478 的数组，每条六字段：`itemId` 条目号，`name` 标题，`mainTypeId` 与 `subTypeId` 分类编号，`subName` 分类名，`lang` 语言。
 
-`data/source_index.tsv` 把两层语料合到一张表里，共 3771 行，其中森空岛 2478 行、fz 1293 行。七列依次为 `source` 来源、`key` 编号或页面路径、`title` 标题、`category` 分类、`corpus` 压缩包名、`member` 包内路径、`url` 原页面地址。时间线里每条证据的 `source` 与 `id` 就是前两列，凭这两列可以在表中查到标题与原文位置。
+`data/source_index.tsv` 把三层语料合到一张表里，共 4013 行，其中森空岛 2478 行、fz 剧情 1293 行、fz Baker 242 行。七列依次为 `source` 来源、`key` 编号或页面路径、`title` 标题、`category` 分类、`corpus` 压缩包名、`member` 包内路径、`url` 原页面地址。时间线里每条证据的 `source` 与 `id` 就是前两列，凭这两列可以在表中查到标题与原文位置。
 
 ### 文本格式
 
 `txt/` 下每份文本用行首标记保留原页层级。`######## [章]` 是章名，`#### [板块]` 是板块名并附控件标识，`| 档案图片 | 档案内容 |` 一类是表格行，`【entry:2365x0】` 是指向其它条目的引用。图片位置只留 `[image]` 占位，图上的文字另见 `evidence/ocr_transcripts.md`。
+
+Baker 文本不走上面的章/板块标记，每行以 `[发言人] 内容` 记录一条消息，`【话题】` 标记话题，`【选项】` 标记玩家选项，`[图片]` 与 `[表情]` 是占位。`baker-text/Baker__事件__应龙特勤队.txt` 里的 `[庄方宜] 诀只用三年时间就从候补成为了队长……` 即该页的一条消息。
 
 ### 时间线数据
 
@@ -102,7 +108,9 @@ python3 tools/index.py
 
 检索与汇总也分两步。`analyze.js` 在全部文本里找「诀」「李织烟」「织烟」三种词形，剔除技能名与常用词造成的误命中，输出命中位置与所在板块。`evidence.js` 把命中整理成三节证据文件，并补上「正文没提名字、只靠词条链接指过来」的那一类。
 
-索引单独一步。`index.py` 枚举两份压缩包里的成员，与条目清单的标题合并，写出 `data/source_index.tsv`。时间线的证据、报告的引文与这份索引用同一套编号，三者对得上。
+索引单独一步。`index.py` 枚举三份压缩包里的成员，与条目清单的标题合并，写出 `data/source_index.tsv`。时间线的证据、报告的引文与这份索引用同一套编号，三者对得上。
+
+fz.wiki 的 Baker 层由 `fetch_baker.py` 单独抓取。标题清单固化在 `tools/baker_titles.txt`，共 242 条；脚本按清单经公开接口取当前修订，按 `msg`、`choices`、`image` 等节点展开成 `[发言人] 内容` 的文本。
 
 | 脚本 | 作用 |
 |---|---|
@@ -111,13 +119,15 @@ python3 tools/index.py
 | `extract.js` | 把详情接口的块结构转换为带章与板块标记的纯文本 |
 | `analyze.js` | 在全部文本中检索三种词形，剔除技能名与常用词的误命中 |
 | `evidence.js` | 把命中结果整理为证据文件，并补上词条交叉引用一节 |
-| `index.py` | 由两份语料压缩包生成合一出处索引 |
+| `index.py` | 由三份语料压缩包生成合一出处索引 |
+| `fetch_baker.py` | 抓取 fz.wiki 的 Baker 命名空间，生成 `baker-raw/` 与 `baker-text/` |
+| `baker_titles.txt` | 242 个 Baker 页标题清单，`fetch_baker.py` 的输入 |
 | `images.js` | 清点某个条目中的全部图片地址及其所在板块 |
 | `dlimg.js` | 按板块下载承载文字的图片，供转录使用 |
 
 ## 数据来源与时效
 
-森空岛 wiki 的语料采集于 2026 年 10 月 17 日，共 2478 条，存于 `corpus/skland-endfield-wiki_2026-10-17.tar.gz`。fz.wiki 的语料采集于 2026 年 10 月 27 日，含 PRTS 记录 549 页、任务 572 页、干员 35 页、活动 138 页，存于 `corpus/fzwiki-2026-10-27.tar.gz`。两层都在仓内，按索引的 `corpus` 与 `member` 两列即可取到任意一条原文。
+森空岛 wiki 的语料采集于 2026 年 10 月 17 日，共 2478 条，存于 `corpus/skland-endfield-wiki_2026-10-17.tar.gz`。fz.wiki 的剧情语料采集于 2026 年 10 月 27 日，含 PRTS 记录 549 页、任务 572 页、干员 35 页、活动 138 页，存于 `corpus/fzwiki-2026-10-27.tar.gz`。fz.wiki 的 Baker 语料采集于 2026 年 11 月 2 日，共 242 页，存于 `corpus/fzwiki-baker-2026-11-02.tar.gz`。三层都在仓内，按索引的 `corpus` 与 `member` 两列即可取到任意一条原文。
 
 快照冻结于采集日。凡「站内没有」一类判断，都以此日为界。
 

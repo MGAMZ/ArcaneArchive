@@ -1,4 +1,4 @@
-"""从两份语料压缩包生成合一出处索引"""
+"""从三层语料压缩包生成合一出处索引（森空岛 + fz 剧情 + fz Baker）"""
 
 import tarfile
 from urllib.parse import quote
@@ -8,6 +8,7 @@ import pathlib
 ROOT = pathlib.Path(__file__).resolve().parent.parent
 SKLAND = ROOT / 'corpus/skland-endfield-wiki_2026-10-17.tar.gz'
 FZ = ROOT / 'corpus/fzwiki-2026-10-27.tar.gz'
+BAKER = ROOT / 'corpus/fzwiki-baker-2026-11-02.tar.gz'
 OUT = ROOT / 'data/source_index.tsv'
 
 items = json.loads((ROOT / 'tools/items_all.json').read_text(encoding='utf-8'))
@@ -36,14 +37,29 @@ with tarfile.open(FZ) as tar:
         fz_rows.append(('fz', rel, parts[-1], category, FZ.name, m.name,
                         'https://www.fz.wiki/wiki/' + quote(rel)))
 
+baker_rows = []
+with tarfile.open(BAKER) as tar:
+    for m in tar.getmembers():
+        if not m.name.endswith('.txt') or not m.name.startswith('baker-text/'):
+            continue
+        rel = m.name.split('/', 1)[1][:-len('.txt')].replace('__', '/')
+        parts = rel.split('/')
+        if len(parts) < 2:
+            continue
+        baker_rows.append(('fz', rel, parts[-1], 'Baker', BAKER.name, m.name,
+                           'https://www.fz.wiki/wiki/' + quote(rel)))
+
 rows.sort(key=lambda r: int(r[1]))
 fz_rows.sort(key=lambda r: r[1])
+baker_rows.sort(key=lambda r: r[1])
 rows.extend(fz_rows)
+rows.extend(baker_rows)
 
 lines = [
-    '# 两层语料合一出处索引（source / key / title / category / corpus / member / url）',
+    '# 三层语料合一出处索引（森空岛 + fz 剧情 + fz Baker；source / key / title / category / corpus / member / url）',
     f'# skland 采集于 2026-10-17，{sum(1 for r in rows if r[0] == "skland")} 条',
-    f'# fz.wiki 采集于 2026-10-27，{len(fz_rows)} 页',
+    f'# fz.wiki 剧情页采集于 2026-10-27，{len(fz_rows)} 页',
+    f'# fz.wiki Baker 页采集于 2026-11-02，{len(baker_rows)} 页',
     '# key 即 data/jue_timeline.json 里证据的 id。member 是压缩包内的路径',
     'source\tkey\ttitle\tcategory\tcorpus\tmember\turl',
 ]
