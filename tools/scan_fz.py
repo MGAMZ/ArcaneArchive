@@ -18,9 +18,9 @@ import sys
 import tarfile
 
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-FZ = ROOT / 'corpus/fzwiki-2026-10-27.tar.gz'
-BAKER = ROOT / 'corpus/fzwiki-baker-2026-11-02.tar.gz'
-SUPPLEMENT = ROOT / 'corpus/fzwiki-supplement-2026-11-02.tar.gz'
+FZ = ROOT / 'corpus/fzwiki-2026-11-12.tar.gz'
+BAKER = ROOT / 'corpus/fzwiki-baker-2026-11-12.tar.gz'
+SUPPLEMENT = ROOT / 'corpus/fzwiki-supplement-2026-11-12.tar.gz'
 OUT = ROOT / 'evidence/fz_mentions.txt'
 
 NAME_TERMS = ('诀', '李织烟', '织烟')
@@ -114,7 +114,7 @@ def main():
         return
 
     out = ['# fz 三层语料中「诀 / 李织烟 / 织烟」的命中与候选',
-           '# 语料：fz.wiki 剧情 1293 页、Baker 242 页、补抓 2143 页',
+           '# 语料：fz.wiki 剧情 1304 页、Baker 247 页、补抓 2166 页',
            '# 由 tools/scan_fz.py 生成；A 节是点名命中，C 节是无名字的候选，需人工判读',
            '']
 

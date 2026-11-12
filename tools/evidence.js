@@ -11,7 +11,7 @@ const GAMEPLAY_ONLY = new Set(['装备', '百科速览', '干员攻略']);
 const all = analyze();
 const out = [];
 out.push('# 全语料中「诀 / 李织烟 / 织烟」命中汇总（已排除技能名与常用词误命中）');
-out.push('# 语料：wiki.skland.com/endfield 全 2478 条目，采集于 2026-10-17');
+out.push('# 语料：wiki.skland.com/endfield 全 2720 条目，采集于 2026-11-12');
 out.push('');
 
 const story = all.filter((r) => !GAMEPLAY_ONLY.has(r.category));

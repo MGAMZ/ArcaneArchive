@@ -3,9 +3,9 @@
   "subject": "诀（李织烟）",
   "calendar": "塔罗斯历",
   "current_year": 152,
-  "corpus": "skland-endfield-wiki_2026-10-17 + fzwiki-2026-10-27 + fzwiki-baker-2026-11-02 + fzwiki-supplement-2026-11-02",
-  "corpus_items": 2478,
-  "generated": "2026-11-02",
+  "corpus": "skland-endfield-wiki_2026-11-12 + fzwiki-2026-11-12 + fzwiki-baker-2026-11-12 + fzwiki-supplement-2026-11-12",
+  "corpus_items": 2720,
+  "generated": "2026-11-12",
   "confidence_scale": {
    "A": "站内原文有明确年份或明确相对时间",
    "B": "由多条站内文本互证推断",
@@ -15,39 +15,39 @@
   "sources": [
    {
     "name": "森空岛 wiki 冻结语料",
-    "date": "2026-10-17",
-    "scope": "2478 条",
-    "file": "corpus/skland-endfield-wiki_2026-10-17.tar.gz"
+    "date": "2026-11-12",
+    "scope": "2720 条",
+    "file": "corpus/skland-endfield-wiki_2026-11-12.tar.gz"
    },
    {
     "name": "fz.wiki PRTS 记录",
-    "date": "2026-10-27",
-    "scope": "549 页，448 页正文在 200 字以上",
-    "file": "corpus/fzwiki-2026-10-27.tar.gz"
+    "date": "2026-11-12",
+    "scope": "549 页",
+    "file": "corpus/fzwiki-2026-11-12.tar.gz"
    },
    {
     "name": "fz.wiki 任务剧本",
-    "date": "2026-10-27",
-    "scope": "572 页，345 页正文在 200 字以上",
-    "file": "corpus/fzwiki-2026-10-27.tar.gz"
+    "date": "2026-11-12",
+    "scope": "578 页",
+    "file": "corpus/fzwiki-2026-11-12.tar.gz"
    },
    {
     "name": "fz.wiki 干员页与活动页",
-    "date": "2026-10-27",
-    "scope": "干员 35 页，活动 138 页",
-    "file": "corpus/fzwiki-2026-10-27.tar.gz"
+    "date": "2026-11-12",
+    "scope": "干员 35 页，活动 142 页",
+    "file": "corpus/fzwiki-2026-11-12.tar.gz"
    },
    {
     "name": "fz.wiki Baker 通信",
-    "date": "2026-11-02",
-    "scope": "242 页",
-    "file": "corpus/fzwiki-baker-2026-11-02.tar.gz"
+    "date": "2026-11-12",
+    "scope": "247 页",
+    "file": "corpus/fzwiki-baker-2026-11-12.tar.gz"
    },
    {
     "name": "fz.wiki 补抓命名空间",
-    "date": "2026-11-02",
-    "scope": "2143 页：环带纪略 4、影片剧情 79、物品 1329、装备 278、武器 87、蚀刻章 182、塔卫研报词典 38、游戏动态 146",
-    "file": "corpus/fzwiki-supplement-2026-11-02.tar.gz"
+    "date": "2026-11-12",
+    "scope": "2166 页：环带纪略 4、影片剧情 79、物品 1345、装备 278、武器 87、蚀刻章 184、塔卫研报词典 38、游戏动态 151",
+    "file": "corpus/fzwiki-supplement-2026-11-12.tar.gz"
    }
   ],
   "source_index": "data/source_index.tsv"
@@ -677,9 +677,9 @@
     {
      "source": "skland",
      "id": "1938",
-     "title": "第二章-进程Ⅶ-长风破浪",
+     "title": "第二章 - 进程Ⅶ - 长风破浪",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-长风破浪",
+     "section": "任务·第二章 - 进程Ⅶ - 长风破浪",
      "quote": "庄方宜：处理分支裂隙或许没问题，但……想要遏制甚大裂隙，恐怕还需要直接借助代理人的权能，以及……协议源石。"
     }
    ],
@@ -705,9 +705,9 @@
     {
      "source": "skland",
      "id": "1946",
-     "title": "第二章-进程Ⅶ-“归途”",
+     "title": "第二章 - 进程Ⅶ - “归途”",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-“归途”",
+     "section": "任务·第二章 - 进程Ⅶ - “归途”",
      "quote": "带着枢壤仪，和同伴们一起前往武陵甚大裂隙"
     },
     {
@@ -921,9 +921,9 @@
     {
      "source": "skland",
      "id": "1940",
-     "title": "第二章-进程Ⅶ-谈剑问迹",
+     "title": "第二章 - 进程Ⅶ - 谈剑问迹",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-谈剑问迹",
+     "section": "任务·第二章 - 进程Ⅶ - 谈剑问迹",
      "quote": "消灭噪雷的蚀影后，竺的蚀影再次出现"
     },
     {
@@ -965,9 +965,9 @@
     {
      "source": "skland",
      "id": "1940",
-     "title": "第二章-进程Ⅶ-谈剑问迹",
+     "title": "第二章 - 进程Ⅶ - 谈剑问迹",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-谈剑问迹",
+     "section": "任务·第二章 - 进程Ⅶ - 谈剑问迹",
      "quote": "“竺”主动向诀发出邀请，众人提高警惕的同时，决定追击"
     },
     {
@@ -1085,9 +1085,9 @@
     {
      "source": "skland",
      "id": "1938",
-     "title": "第二章-进程Ⅶ-长风破浪",
+     "title": "第二章 - 进程Ⅶ - 长风破浪",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-长风破浪",
+     "section": "任务·第二章 - 进程Ⅶ - 长风破浪",
      "quote": "与诀会合，前往监牢审问阿达希尔……与祀会合，确认枢壤仪强化仪式的情况。"
     },
     {
@@ -1113,17 +1113,17 @@
     {
      "source": "skland",
      "id": "1940",
-     "title": "第二章-进程Ⅶ-谈剑问迹",
+     "title": "第二章 - 进程Ⅶ - 谈剑问迹",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-谈剑问迹",
+     "section": "任务·第二章 - 进程Ⅶ - 谈剑问迹",
      "quote": "诀告诉众人，前方便是许多应龙队员曾生活、学习过的地方——谈剑堂"
     },
     {
      "source": "skland",
      "id": "1940",
-     "title": "第二章-进程Ⅶ-谈剑问迹",
+     "title": "第二章 - 进程Ⅶ - 谈剑问迹",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-谈剑问迹",
+     "section": "任务·第二章 - 进程Ⅶ - 谈剑问迹",
      "quote": "众人跟着竺的蚀影前进。更多应龙队员的蚀影出现，诀和陈千语决定帮他们解脱"
     },
     {
@@ -1165,9 +1165,9 @@
     {
      "source": "skland",
      "id": "1946",
-     "title": "第二章-进程Ⅶ-“归途”",
+     "title": "第二章 - 进程Ⅶ - “归途”",
      "category": "任务",
-     "section": "任务·第二章-进程Ⅶ-“归途”",
+     "section": "任务·第二章 - 进程Ⅶ - “归途”",
      "quote": "带着枢壤仪，和同伴们一起前往武陵甚大裂隙"
     },
     {

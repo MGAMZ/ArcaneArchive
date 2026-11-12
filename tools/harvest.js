@@ -1,6 +1,6 @@
 const fs = require('fs');
 const path = require('path');
-const PW = '/home/mgam/.local/lib/qwen-code/lib/bundled/browser-use/runtime/node_modules/playwright-core';
+const PW = '/home/mgam/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core';
 const { chromium } = require(PW);
 
 const EXE = '/home/mgam/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome';

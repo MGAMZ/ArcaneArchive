@@ -1,6 +1,6 @@
 """抓取 fz.wiki 的 Baker 命名空间，保存接口原样 JSON 与按消息顺序展开的文本。
 
-标题清单固化在 `tools/baker_titles.txt`，共 242 条；`tmp/fz_sitemap.xml` 只作
+标题清单固化在 `tools/baker_titles.txt`，共 247 条；`tmp/fz_sitemap.xml` 只作
 后备。Baker 页是游戏内通讯软件的对话聚合，消息节点用 kind: msg / choices /
 image 等，和任务页的 type: line 不是一套结构，所以单独走一个展开器。
 

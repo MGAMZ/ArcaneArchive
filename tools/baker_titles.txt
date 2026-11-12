@@ -4,6 +4,7 @@ Baker/事件/“活导航”
 Baker/事件/“烙铁指令”
 Baker/事件/“驯兽师”的习惯
 Baker/事件/不应留有遗憾
+Baker/事件/不拘一格的改装
 Baker/事件/不是冤家不聚头
 Baker/事件/与侵蚀赛跑
 Baker/事件/世代摇篮
@@ -25,6 +26,7 @@ Baker/事件/冷笑话诀窍
 Baker/事件/初来乍到
 Baker/事件/到塞梦珂去
 Baker/事件/前路漫漫
+Baker/事件/剑客排行榜
 Baker/事件/动物奇想
 Baker/事件/十年沉眠
 Baker/事件/危机与安宁
@@ -119,6 +121,7 @@ Baker/事件/适应新家
 Baker/事件/通向禁区的一步
 Baker/事件/采石场的未来
 Baker/事件/重要特邀嘉宾
+Baker/事件/重逢寻常如昨
 Baker/事件/铁皮好手
 Baker/事件/阿吉的病
 Baker/事件/难得片刻闲余
@@ -153,6 +156,7 @@ Baker/剧情角色频道/沃尔顿
 Baker/剧情角色频道/沈迟白
 Baker/剧情角色频道/沐奚
 Baker/剧情角色频道/法比安·柯林斯
+Baker/剧情角色频道/牧行
 Baker/剧情角色频道/玛蒂娜
 Baker/剧情角色频道/环卫管理员
 Baker/剧情角色频道/田阿姨
@@ -195,6 +199,7 @@ Baker/干员频道/庄方宜
 Baker/干员频道/弧光
 Baker/干员频道/弭弗
 Baker/干员频道/提弗洛斯
+Baker/干员频道/明河
 Baker/干员频道/昼雪
 Baker/干员频道/梨诺
 Baker/干员频道/汤汤

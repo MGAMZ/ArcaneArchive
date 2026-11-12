@@ -9,7 +9,7 @@ const meta = {};
 for (const it of items) meta[it.itemId] = it;
 
 // Compound words containing 诀 that are NOT a reference to the operator.
-// Built empirically from all 397 occurrences of 诀 in the 2478-item corpus
+// Built empirically from all 139 occurrences of 诀 in the 2720-item corpus
 // (see window-frequency audit): every X诀 / 诀X collocation was classified.
 const FALSE_JUE = [
   // common Chinese words

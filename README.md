@@ -17,7 +17,7 @@
 
 ```bash
 mkdir -p /tmp/skwiki
-tar xzf corpus/skland-endfield-wiki_2026-10-17.tar.gz -C /tmp/skwiki
+tar xzf corpus/skland-endfield-wiki_2026-11-12.tar.gz -C /tmp/skwiki
 cp tools/items_all.json /tmp/skwiki/
 ```
 
@@ -54,23 +54,23 @@ python3 tools/index.py
 
 语料分四层，各存一个压缩包，文件名带采集日。
 
-`corpus/skland-endfield-wiki_2026-10-17.tar.gz` 解包后有 `raw/`、`txt/` 与 `data/` 三个目录。`raw/` 存条目详情接口的原样返回，`txt/` 存同名纯文本，两处的文件名都是条目号，共 2478 条。`data/` 存采集时截获的 14 份列表类接口。
+`corpus/skland-endfield-wiki_2026-11-12.tar.gz` 解包后有 `raw/`、`txt/` 与 `data/` 三个目录。`raw/` 存条目详情接口的原样返回，`txt/` 存同名纯文本，两处的文件名都是条目号，共 2720 条。`data/` 存采集时截获的 14 份列表类接口。
 
-`corpus/fzwiki-2026-10-27.tar.gz` 解包后有 `prts-raw/`、`prts-text/`、`story-raw/` 与 `story-text/` 四个目录，目录名写出内容类别与文件形态。`prts-raw/` 与 `prts-text/` 各 549 份，对应 PRTS 记录，前者是接口原样 JSON，后者是展开后的文本。`story-raw/` 与 `story-text/` 各 745 份，对应任务、干员与活动页面，`story` 指剧情类页面。文件名里的斜线改为双下划线，`story-text/任务__第二章__谈剑问迹.txt` 即页面路径 `任务/第二章/谈剑问迹`。
+`corpus/fzwiki-2026-11-12.tar.gz` 解包后有 `prts-raw/`、`prts-text/`、`story-raw/` 与 `story-text/` 四个目录，目录名写出内容类别与文件形态。`prts-raw/` 与 `prts-text/` 各 550 份，其中 549 页是分类记录，前者是接口原样 JSON，后者是展开后的文本。`story-raw/` 与 `story-text/` 各 755 份，对应任务、干员与活动页面，`story` 指剧情类页面。文件名里的斜线改为双下划线，`story-text/任务__第二章__谈剑问迹.txt` 即页面路径 `任务/第二章/谈剑问迹`。
 
-`corpus/fzwiki-baker-2026-11-02.tar.gz` 解包后有 `baker-raw/` 与 `baker-text/` 两个目录，各 242 份，对应 fz.wiki 的 Baker 命名空间。前者是接口原样 JSON，后者是按话题与消息顺序展开的文本。Baker 页覆盖事件群聊、干员频道、剧情角色频道与表情，文件名同样把斜线改为双下划线，`baker-text/Baker__事件__应龙特勤队.txt` 即页面路径 `Baker/事件/应龙特勤队`。
+`corpus/fzwiki-baker-2026-11-12.tar.gz` 解包后有 `baker-raw/` 与 `baker-text/` 两个目录，各 247 份，对应 fz.wiki 的 Baker 命名空间。前者是接口原样 JSON，后者是按话题与消息顺序展开的文本。Baker 页覆盖事件群聊、干员频道、剧情角色频道与表情，文件名同样把斜线改为双下划线，`baker-text/Baker__事件__应龙特勤队.txt` 即页面路径 `Baker/事件/应龙特勤队`。
 
-`corpus/fzwiki-supplement-2026-11-02.tar.gz` 解包后有八组 `*-raw/` 与 `*-text/` 目录，另有一份 `video-sub/`，共 2143 页：`chronicle` 环带纪略 4 页、`video` 影片剧情 79 页、`item` 物品 1329 页、`equip` 装备 278 页、`weapon` 武器 87 页、`medal` 蚀刻章 182 页、`report` 塔卫研报词典 38 页、`news` 游戏动态 146 页。目录名一律用英文类别名，页内路径仍按原样把斜线换成双下划线，`item-text/物品__干员信物__诀的信物.txt` 即页面路径 `物品/干员信物/诀的信物`。`video-sub/` 存接口给出的简体中文 `.ass` 字幕，`video-text/` 是按时间码展开的对白，同一页的不同角色变体各成一节。
+`corpus/fzwiki-supplement-2026-11-12.tar.gz` 解包后有八组 `*-raw/` 与 `*-text/` 目录，另有一份 `video-sub/`，共 2166 页：`chronicle` 环带纪略 4 页、`video` 影片剧情 79 页、`item` 物品 1345 页、`equip` 装备 278 页、`weapon` 武器 87 页、`medal` 蚀刻章 184 页、`report` 塔卫研报词典 38 页、`news` 游戏动态 151 页。目录名一律用英文类别名，页内路径仍按原样把斜线换成双下划线，`item-text/物品__干员信物__诀的信物.txt` 即页面路径 `物品/干员信物/诀的信物`。`video-sub/` 存接口给出的简体中文 `.ass` 字幕，`video-text/` 是按时间码展开的对白，同一页的不同角色变体各成一节。
 
 重新打包 fz 各层时用 `tar czf <包名> --hard-dereference --sort=name -C tmp/fzwiki <目录…>`。本机 WSL 的 `/mnt/f` 会给不同文件复用 inode，普通 `tar` 会把一部分 `*-text` 成员误存成指向 `*-raw` 里某个 JSON 的硬链接（size 0），解出来是别人的正文。`--hard-dereference` 可避开，解包后的文本应与采集目录逐字节一致，打包后抽一页核对即可。
 
-森空岛一层采集于 2026 年 10 月 17 日，fz 剧情一层采集于 2026 年 10 月 27 日，fz Baker 与补抓的八个命名空间采集于 2026 年 11 月 2 日，此后的游戏内容不在其中。
+四层语料都采集于 2026 年 11 月 12 日，此后的游戏内容不在其中。
 
 ### 条目清单与合一索引
 
-`tools/items_all.json` 是长度 2478 的数组，每条六字段：`itemId` 条目号，`name` 标题，`mainTypeId` 与 `subTypeId` 分类编号，`subName` 分类名，`lang` 语言。
+`tools/items_all.json` 是长度 2720 的数组，每条六字段：`itemId` 条目号，`name` 标题，`mainTypeId` 与 `subTypeId` 分类编号，`subName` 分类名，`lang` 语言。
 
-`data/source_index.tsv` 把四层语料合到一张表里，共 6156 行，其中森空岛 2478 行、fz 剧情 1293 行、fz Baker 242 行、fz 补抓 2143 行。七列依次为 `source` 来源、`key` 编号或页面路径、`title` 标题、`category` 分类、`corpus` 压缩包名、`member` 包内路径、`url` 原页面地址。时间线里每条证据的 `source` 与 `id` 就是前两列，凭这两列可以在表中查到标题与原文位置。
+`data/source_index.tsv` 把四层语料合到一张表里，共 6437 行，其中森空岛 2720 行、fz 剧情 1304 行、fz Baker 247 行、fz 补抓 2166 行。七列依次为 `source` 来源、`key` 编号或页面路径、`title` 标题、`category` 分类、`corpus` 压缩包名、`member` 包内路径、`url` 原页面地址。时间线里每条证据的 `source` 与 `id` 就是前两列，凭这两列可以在表中查到标题与原文位置。
 
 ### 文本格式
 
@@ -117,7 +117,7 @@ Baker 文本不走上面的章/板块标记，每行以 `[发言人] 内容` 记
 
 索引单独一步。`index.py` 枚举四份压缩包里的成员，与条目清单的标题合并，写出 `data/source_index.tsv`。时间线的证据、报告的引文与这份索引用同一套编号，三者对得上。
 
-fz.wiki 的 Baker 层由 `fetch_baker.py` 单独抓取。标题清单固化在 `tools/baker_titles.txt`，共 242 条；脚本按清单经公开接口取当前修订，按 `msg`、`choices`、`image` 等节点展开成 `[发言人] 内容` 的文本。
+fz.wiki 的 Baker 层由 `fetch_baker.py` 单独抓取。标题清单固化在 `tools/baker_titles.txt`，共 247 条；脚本按清单经公开接口取当前修订，按 `msg`、`choices`、`image` 等节点展开成 `[发言人] 内容` 的文本。
 
 fz.wiki 补抓的八个命名空间由 `fetch_fz.py` 抓取。它按前缀向列表接口枚举标题，逐页取当前修订，`extract_fz.py` 再按页面形态选展开规则：环带纪略与公告走通用文档展开，物品、装备、武器、蚀刻章各取自己的卡片字段，研报词典按词条输出，影片另下简体中文 `.ass` 字幕并按时间码展开。`fetch_fz.py --rebuild-text` 不联网，只从已有的 `*-raw/` 重写文本，字幕也复用已下载的副本。
 
@@ -130,7 +130,7 @@ fz.wiki 补抓的八个命名空间由 `fetch_fz.py` 抓取。它按前缀向列
 | `evidence.js` | 把命中结果整理为证据文件，并补上词条交叉引用一节 |
 | `index.py` | 由四份语料压缩包生成合一出处索引 |
 | `fetch_baker.py` | 抓取 fz.wiki 的 Baker 命名空间，生成 `baker-raw/` 与 `baker-text/` |
-| `baker_titles.txt` | 242 个 Baker 页标题清单，`fetch_baker.py` 的输入 |
+| `baker_titles.txt` | 247 个 Baker 页标题清单，`fetch_baker.py` 的输入 |
 | `fetch_fz.py` | 按命名空间前缀抓取 fz.wiki 页面与影片字幕，生成补抓包的 `*-raw/`、`*-text/` 与 `video-sub/` |
 | `extract_fz.py` | 把 fz.wiki 接口原样 JSON 展开成文本，按页面形态分七套规则 |
 | `scan_fz.py` | 在 fz 三层语料里检索三种词形，产出 `evidence/fz_mentions.txt` 与未提名候选表 |
@@ -139,7 +139,7 @@ fz.wiki 补抓的八个命名空间由 `fetch_fz.py` 抓取。它按前缀向列
 
 ## 数据来源与时效
 
-森空岛 wiki 的语料采集于 2026 年 10 月 17 日，共 2478 条，存于 `corpus/skland-endfield-wiki_2026-10-17.tar.gz`。fz.wiki 的剧情语料采集于 2026 年 10 月 27 日，含 PRTS 记录 549 页、任务 572 页、干员 35 页、活动 138 页，存于 `corpus/fzwiki-2026-10-27.tar.gz`。fz.wiki 的 Baker 语料采集于 2026 年 11 月 2 日，共 242 页，存于 `corpus/fzwiki-baker-2026-11-02.tar.gz`；同日的八个命名空间共 2143 页，存于 `corpus/fzwiki-supplement-2026-11-02.tar.gz`。四层都在仓内，按索引的 `corpus` 与 `member` 两列即可取到任意一条原文。
+森空岛 wiki 的语料采集于 2026 年 11 月 12 日，共 2720 条，存于 `corpus/skland-endfield-wiki_2026-11-12.tar.gz`。fz.wiki 的剧情语料采集于 2026 年 11 月 12 日，含 PRTS 记录 549 页、任务 578 页、干员 35 页、活动 142 页，存于 `corpus/fzwiki-2026-11-12.tar.gz`。fz.wiki 的 Baker 语料采集于 2026 年 11 月 12 日，共 247 页，存于 `corpus/fzwiki-baker-2026-11-12.tar.gz`；同日的八个命名空间共 2166 页，存于 `corpus/fzwiki-supplement-2026-11-12.tar.gz`。四层都在仓内，按索引的 `corpus` 与 `member` 两列即可取到任意一条原文。
 
 快照冻结于采集日。凡「站内没有」一类判断，都以此日为界。
 
