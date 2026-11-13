@@ -12,7 +12,7 @@ python3 tools/extract_fz.py story-raw story-text
 python3 tools/extract_fz.py item-raw item-text
 ```
 
-两个参数都相对 `tmp/fzwiki/`，也可以给绝对路径。
+两个参数都相对 `work/fzwiki/`，也可以给绝对路径。
 """
 import json
 import pathlib
@@ -374,8 +374,8 @@ def main():
         raise SystemExit(__doc__)
     src = pathlib.Path(sys.argv[1])
     dst = pathlib.Path(sys.argv[2])
-    src = src if src.is_absolute() else ROOT / 'tmp/fzwiki' / src
-    dst = dst if dst.is_absolute() else ROOT / 'tmp/fzwiki' / dst
+    src = src if src.is_absolute() else ROOT / 'work/fzwiki' / src
+    dst = dst if dst.is_absolute() else ROOT / 'work/fzwiki' / dst
     kind = kind_of(src)
     if kind == 'video':
         raise SystemExit('影片页要用 fetch_fz.py --only video --rebuild-text，字幕不在 raw 里')

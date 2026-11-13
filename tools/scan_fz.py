@@ -1,27 +1,24 @@
 """在 fz 三层语料里检索「诀」，产出 evidence/fz_mentions.txt
 
-`analyze.js` 与 `evidence.js` 只读森空岛那一层，fz 的剧情、Baker、补抓三层
+`analyze.py` 与 `evidence.py` 只读森空岛那一层，fz 的剧情、Baker、补抓三层
 一直没有机检。本脚本补上这一段，分三节：
 
 A 点名命中，逐页列出命中的行与所在标题；
 B 误命中，「诀」只出现在诀窍、秘诀一类词里；
-C 未提名候选，正文没有「诀」字，但落在只跟武陵这条线有关的少数专名上。
+C 未提名候选，正文没有「诀」字，但命中只跟武陵这条线有关的少数专名。
 
 C 节是给人看的候选表，不是结论：命中一个专名不等于讲了诀的事。只按地名取词
 会把整批武陵任务页都拖进来，所以门槛设成「至少命中一个只属于她这条线的专名」，
 武陵、息壤、天师桩这类通用词只用来标注。
 """
 
-import pathlib
 import re
 import sys
 import tarfile
 
-ROOT = pathlib.Path(__file__).resolve().parent.parent
-FZ = ROOT / 'corpus/fzwiki-2026-11-12.tar.gz'
-BAKER = ROOT / 'corpus/fzwiki-baker-2026-11-12.tar.gz'
-SUPPLEMENT = ROOT / 'corpus/fzwiki-supplement-2026-11-12.tar.gz'
-OUT = ROOT / 'evidence/fz_mentions.txt'
+import corpus
+
+OUT = corpus.ROOT / 'evidence/fz_mentions.txt'
 
 NAME_TERMS = ('诀', '李织烟', '织烟')
 FP_WORDS = ('诀窍', '秘诀', '口诀', '要诀', '妙诀')
@@ -34,26 +31,20 @@ NARROW_TERMS = ('谈剑堂', '噪雷', '应龙特勤队', '应龙桩', '临渊')
 PROXY_TERMS = ('队长', '应龙队员', '老师')
 
 LAYERS = (
-    (FZ, ('prts-text/', 'story-text/'), 'fz 剧情'),
-    (BAKER, ('baker-text/',), 'fz Baker'),
-    (SUPPLEMENT, ('chronicle-text/', 'video-text/', 'item-text/', 'equip-text/',
-                  'weapon-text/', 'medal-text/', 'report-text/', 'news-text/'), 'fz 补抓'),
+    (corpus.FZ, ('prts-text/', 'story-text/'), 'fz 剧情'),
+    (corpus.BAKER, ('baker-text/',), 'fz Baker'),
+    (corpus.SUPPLEMENT, None, 'fz 补抓'),
 )
 
 HEADING = re.compile(r'^(#+ |【[^】]{1,20}】)')
 
 
 def pages(tar_path, prefixes):
-    """枚举 `*-text/` 成员，返回 (页面路径, 分类, 正文)。"""
+    """枚举 `*-text/` 成员，返回 (页面路径, 分类, 正文)"""
     with tarfile.open(tar_path) as tar:
-        for m in tar.getmembers():
-            if not m.name.startswith(prefixes) or not m.name.endswith('.txt'):
-                continue
-            rel = m.name.split('/', 1)[1][:-len('.txt')].replace('__', '/')
-            parts = rel.split('/')
-            if len(parts) < 2:
-                continue
-            category = parts[1] if parts[0] == 'PRTS记录' else parts[0]
+        if prefixes is None:
+            prefixes = corpus.text_dirs(tar)
+        for rel, _, category, m in corpus.members(tar, prefixes):
             body = tar.extractfile(m).read().decode('utf-8')
             yield rel, category, body
 
@@ -92,8 +83,10 @@ def heading_of(lines, idx):
 def main():
     stats = '--stats' in sys.argv
     named, false_pos, candidates = [], [], []
+    counts = {}
     for tar_path, prefixes, layer in LAYERS:
         for rel, category, body in pages(tar_path, prefixes):
+            counts[layer] = counts.get(layer, 0) + 1
             terms, hits = name_hits(body)
             if terms:
                 named.append((layer, category, rel, body, sorted(terms), hits))
@@ -114,7 +107,7 @@ def main():
         return
 
     out = ['# fz 三层语料中「诀 / 李织烟 / 织烟」的命中与候选',
-           '# 语料：fz.wiki 剧情 1304 页、Baker 247 页、补抓 2166 页',
+           '# 语料：' + '、'.join(f'{layer} {counts.get(layer, 0)} 页' for _, _, layer in LAYERS),
            '# 由 tools/scan_fz.py 生成；A 节是点名命中，C 节是无名字的候选，需人工判读',
            '']
 
@@ -155,7 +148,7 @@ def main():
         out.append(f'  - [{category}] {rel}  ({"/".join(narrow)} | {"/".join(found)}){mark}')
 
     OUT.write_text('\n'.join(out) + '\n', encoding='utf-8')
-    print('wrote', OUT.relative_to(ROOT), len(out), 'lines')
+    print('wrote', OUT.relative_to(corpus.ROOT), len(out), 'lines')
     print('named', len(named), '| false_pos', len(false_pos), '| candidates', len(candidates))
 
 

@@ -1,0 +1,10 @@
+{
+  "name": "arcanarchive-tools",
+  "private": true,
+  "dependencies": {
+    "playwright": "1.63.0"
+  },
+  "scripts": {
+    "install-browser": "node node_modules/playwright/cli.js install chromium"
+  }
+}

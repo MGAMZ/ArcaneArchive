@@ -1,5 +1,7 @@
 // Inventory every image URL in an item payload, together with the section it lives in.
 const fs = require('fs');
+const path = require('path');
+const { WORK } = require('./paths.js');
 
 const IMG_RE = /^https?:\/\/\S+\.(?:png|jpe?g|webp|gif)(?:\?\S*)?$/i;
 
@@ -48,7 +50,7 @@ function buildDocIndex(item) {
 }
 
 function inventory(itemId) {
-  const j = JSON.parse(fs.readFileSync(`/tmp/skwiki/raw/${itemId}.json`, 'utf8'));
+  const j = JSON.parse(fs.readFileSync(path.join(WORK, 'raw', `${itemId}.json`), 'utf8'));
   const item = j.data.item;
   const out = [];
   collectUrls(item, 'item', out);

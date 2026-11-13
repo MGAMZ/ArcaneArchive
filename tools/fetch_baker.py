@@ -1,7 +1,6 @@
 """抓取 fz.wiki 的 Baker 命名空间，保存接口原样 JSON 与按消息顺序展开的文本。
 
-标题清单固化在 `tools/baker_titles.txt`，共 247 条；`tmp/fz_sitemap.xml` 只作
-后备。Baker 页是游戏内通讯软件的对话聚合，消息节点用 kind: msg / choices /
+Baker 页是游戏内通讯软件的对话聚合，消息节点用 kind: msg / choices /
 image 等，和任务页的 type: line 不是一套结构，所以单独走一个展开器。
 
 文本格式：
@@ -20,12 +19,12 @@ from concurrent.futures import ThreadPoolExecutor
 
 import requests
 
+import fetch_fz
+
 BASE = 'https://api.fz.wiki/api/v1'
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-SITEMAP = ROOT / 'tmp/fz_sitemap.xml'
-TITLES = ROOT / 'tools/baker_titles.txt'
-OUT_RAW = ROOT / 'tmp/fzwiki/baker-raw'
-OUT_TXT = ROOT / 'tmp/fzwiki/baker-text'
+OUT_RAW = ROOT / 'work/fzwiki/baker-raw'
+OUT_TXT = ROOT / 'work/fzwiki/baker-text'
 
 S = requests.Session()
 S.headers.update({'User-Agent': 'ArcaneArchive-research/1.0 (lore archival)',
@@ -44,17 +43,6 @@ def get(url):
             pass
         time.sleep(1.2 * (i + 1))
     return None
-
-
-def baker_titles():
-    if TITLES.exists():
-        return [line.strip() for line in TITLES.read_text(encoding='utf-8').splitlines()
-                if line.strip()]
-    text = SITEMAP.read_text(encoding='utf-8')
-    urls = re.findall(r'<loc>(.*?)</loc>', text)
-    titles = [urllib.parse.unquote(u.split('/wiki/', 1)[1])
-              for u in urls if '/wiki/Baker/' in u]
-    return sorted(set(titles))
 
 
 def walk(node, out):
@@ -131,13 +119,15 @@ def fetch(title, force=False):
 def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--title', action='append', default=[],
-                        help='只抓指定标题，可重复；默认抓 sitemap 里的全部 Baker 页')
+                        help='只抓指定标题，可重复；默认列举 Baker/ 前缀下的全部页面')
     parser.add_argument('--force', action='store_true')
     parser.add_argument('--workers', type=int, default=8)
     parser.add_argument('--dry-run', action='store_true')
     args = parser.parse_args()
 
-    titles = args.title or baker_titles()
+    titles = args.title or fetch_fz.enum_titles('Baker/')
+    if not titles:
+        raise SystemExit('Baker/ 前缀没有列举到页面')
     print('titles', len(titles), flush=True)
     if args.dry_run:
         for title in titles:

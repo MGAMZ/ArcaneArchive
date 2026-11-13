@@ -1,5 +1,4 @@
 // Converts a Skland Endfield wiki `item/info` payload into ordered, readable text.
-const fs = require('fs');
 
 function inlineToText(el) {
   if (!el) return '';
@@ -120,12 +119,3 @@ function extractItem(item) {
 }
 
 module.exports = { extractItem };
-
-if (require.main === module) {
-  const p = process.argv[2] || '/tmp/skwiki/jue_item_info.json';
-  const j = JSON.parse(fs.readFileSync(p, 'utf8'));
-  const txt = extractItem(j.data.item);
-  const out = p.replace(/\.json$/, '.txt');
-  fs.writeFileSync(out, txt);
-  console.log('wrote', out, txt.length, 'chars,', txt.split('\n').length, 'lines');
-}

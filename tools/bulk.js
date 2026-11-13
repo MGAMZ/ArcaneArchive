@@ -2,11 +2,12 @@ const fs = require('fs');
 const path = require('path');
 const { openContext } = require('./harvest.js');
 const { extractItem } = require('./extract.js');
+const { WORK } = require('./paths.js');
 
-const RAW = '/tmp/skwiki/raw';
-const TXT = '/tmp/skwiki/txt';
-const LOG = '/tmp/skwiki/harvest.log';
-const FAIL = '/tmp/skwiki/failed.json';
+const RAW = path.join(WORK, 'raw');
+const TXT = path.join(WORK, 'txt');
+const LOG = path.join(WORK, 'harvest.log');
+const FAIL = path.join(WORK, 'failed.json');
 fs.mkdirSync(RAW, { recursive: true });
 fs.mkdirSync(TXT, { recursive: true });
 
@@ -15,7 +16,7 @@ const SETTLE_MS = 90;
 const NAV_TIMEOUT = 25000;
 const MAX_ITEM_ATTEMPTS = 3;
 
-const items = JSON.parse(fs.readFileSync('/tmp/skwiki/items_all.json', 'utf8'));
+const items = require('./catalog.js').load();
 const detailUrl = (it) =>
   `https://wiki.skland.com/endfield/detail?mainTypeId=${it.mainTypeId}&subTypeId=${it.subTypeId}&gameEntryId=${it.itemId}&header=0`;
 

@@ -1,4 +1,4 @@
-"""按命名空间前缀抓取 fz.wiki 页面，落接口原样 JSON 与展开文本。
+"""按命名空间前缀抓取 fz.wiki 页面，保存接口原样 JSON 与展开文本。
 
 列表接口 `GET /api/v1/articles?prefix=<前缀>&size=200&page=N` 给出该前缀下的全部标题与
 `total`；逐页再走 `by-title` 取 `currentRevisionId`，最后走 `revisions/{id}` 取正文。列表接口
@@ -7,10 +7,11 @@
 ```bash
 python3 tools/fetch_fz.py                 # 抓默认清单里的全部命名空间
 python3 tools/fetch_fz.py --only video     # 只抓影片
+python3 tools/fetch_fz.py --force          # 重抓已存在的页
 python3 tools/fetch_fz.py --dry-run        # 只列标题与条数
 ```
 
-输出写到 `tmp/fzwiki/<目录>-raw/`（原样 JSON）与 `<目录>-text/`（展开文本），影片另存
+输出写到 `work/fzwiki/<目录>-raw/`（原样 JSON）与 `<目录>-text/`（展开文本），影片另存
 `video-sub/`（接口给的简体中文 .ass 字幕）。已存在的页会跳过，中断后可直接重跑。
 """
 import argparse
@@ -27,7 +28,7 @@ import extract_fz
 
 BASE = 'https://api.fz.wiki/api/v1'
 ROOT = pathlib.Path(__file__).resolve().parent.parent
-OUT = ROOT / 'tmp/fzwiki'
+OUT = ROOT / 'work/fzwiki'
 
 # (前缀, 目录名, 展开规则)。目录名写内容类别，展开规则见 extract_fz 与下文 expand_video。
 TARGETS = [
@@ -152,11 +153,11 @@ def expand_video(attrs, title, sub_dir):
     return ''.join(out)
 
 
-def fetch(title, kind, txt_dir, sub_dir):
+def fetch(title, kind, txt_dir, sub_dir, force=False):
     raw_dir = txt_dir.parent / (txt_dir.name.split('-')[0] + '-raw')
     raw_path = raw_dir / f'{slug(title)}.json'
     txt_path = txt_dir / f'{slug(title)}.txt'
-    if raw_path.exists() and txt_path.exists():
+    if not force and raw_path.exists() and txt_path.exists():
         return title, 'skip'
 
     art = get_json(f'{BASE}/articles/by-title?' + urllib.parse.urlencode({'title': title}))
@@ -171,12 +172,16 @@ def fetch(title, kind, txt_dir, sub_dir):
     raw_dir.mkdir(parents=True, exist_ok=True)
     raw_path.write_text(json.dumps({'article': article, 'revision': revision}, ensure_ascii=False),
                         encoding='utf-8')
+    if force and kind == 'video':
+        sub_dir.mkdir(parents=True, exist_ok=True)
+        for p in sub_dir.glob(f'{slug(title)}__*.ass'):
+            p.unlink()
     write_text(title, kind, revision, txt_dir, sub_dir)
     return title, 'ok'
 
 
 def write_text(title, kind, revision, txt_dir, sub_dir):
-    """展开结果直接落盘，末尾不补换行，与 `extract_fz.py` 单独重跑的结果一致。"""
+    """展开结果直接写入，末尾不补换行，与 `extract_fz.py` 单独重跑的结果一致。"""
     if kind == 'video':
         attrs = revision['contentJson']['content'][0].get('attrs') or {}
         text = expand_video(attrs, title, sub_dir)
@@ -202,11 +207,15 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument('--only', action='append', default=[],
                         help='只跑这些目录名，可重复；默认全部')
+    parser.add_argument('--force', action='store_true',
+                        help='忽略已存在的页，重新抓取')
     parser.add_argument('--dry-run', action='store_true')
     parser.add_argument('--rebuild-text', action='store_true',
                         help='不联网，只从已有的 raw JSON 重写文本')
     parser.add_argument('--workers', type=int, default=8)
     args = parser.parse_args()
+    if args.force and args.rebuild_text:
+        parser.error('--force 与 --rebuild-text 不能同时使用')
 
     targets = [t for t in TARGETS if not args.only or t[1] in args.only]
     if args.rebuild_text:
@@ -232,7 +241,7 @@ def main():
     done = 0
     tally = {}
     with ThreadPoolExecutor(max_workers=args.workers) as ex:
-        for title, status in ex.map(lambda j: fetch(*j), jobs):
+        for title, status in ex.map(lambda j: fetch(*j, force=args.force), jobs):
             done += 1
             tally[status] = tally.get(status, 0) + 1
             if status in ('no-article', 'no-revision'):

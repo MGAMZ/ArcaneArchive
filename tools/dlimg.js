@@ -3,8 +3,9 @@ const fs = require('fs');
 const path = require('path');
 const https = require('https');
 const { inventory } = require('./images.js');
+const { WORK } = require('./paths.js');
 
-const OUT = '/tmp/skwiki/img';
+const OUT = path.join(WORK, 'img');
 fs.mkdirSync(OUT, { recursive: true });
 
 // Sections worth OCR-ing (story / personnel text), matched as substrings.

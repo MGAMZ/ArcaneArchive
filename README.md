@@ -13,30 +13,24 @@
 
 ## 快速开始
 
-森空岛一层的脚本把工作目录写成了 `/tmp/skwiki`，先解包并放好条目清单。
-
-```bash
-mkdir -p /tmp/skwiki
-tar xzf corpus/skland-endfield-wiki_*.tar.gz -C /tmp/skwiki
-cp tools/items_all.json /tmp/skwiki/
-```
-
-fz 三层的检索与索引直接读 `corpus/` 下的压缩包，时间线也能直接读，都不必解包。
+检索、证据与索引都直接读 `corpus/` 里的压缩包，不必解包。时间线是 `data/` 下的一份 JSON。
 
 ```bash
 node -e "const {events}=require('./data/jue_timeline.json');console.log(events.length, events[0].title)"
-```
-
-重跑检索、证据汇总与索引。
-
-```bash
-node tools/analyze.js
-node tools/evidence.js
+python3 tools/analyze.py
+python3 tools/evidence.py
 python3 tools/scan_fz.py
 python3 tools/index.py
 ```
 
-`tools/index.py` 重建 `data/source_index.tsv`。`analyze.js` 与 `evidence.js` 的产物写在 `/tmp/skwiki`，其中 `evidence_mentions.txt` 需要复制进 `evidence/`。
+`tools/index.py` 重建 `data/source_index.tsv`，`tools/evidence.py` 写 `evidence/evidence_mentions.txt`。
+
+要在本地按条目打开森空岛的正文，解包一份。解包与抓取的产物都在仓内 `work/` 下，不入库，清掉后重跑对应命令即可重建，持久副本是 `corpus/` 的四份压缩包。
+
+```bash
+mkdir -p work/skland
+tar xzf corpus/skland-endfield-wiki_*.tar.gz -C work/skland
+```
 
 ## 数据
 
@@ -64,31 +58,31 @@ python3 tools/index.py
 | `harvest.js` | 打开森空岛首页，记录全部 wiki 接口返回，得到列表接口与条目目录 |
 | `bulk.js` | 按条目清单逐条抓详情，调用 `extract.js` 生成纯文本 |
 | `extract.js` | 把详情接口的块结构转成带章与板块标记的纯文本 |
-| `analyze.js` | 在森空岛文本里检索三种词形，剔除技能名与常用词造成的误命中 |
-| `evidence.js` | 把命中整理成证据文件，补上词条交叉引用一节 |
+| `analyze.py` | 在森空岛文本里检索三种词形，剔除技能名与常用词造成的误命中 |
+| `evidence.py` | 把命中整理成证据文件，补上词条交叉引用一节 |
 | `index.py` | 由四份压缩包生成合一出处索引 |
-| `fetch_baker.py` | 按 `baker_titles.txt` 的清单抓取 Baker 命名空间 |
+| `catalog.js` | 从解包出来的条目目录读出森空岛条目清单，供 `bulk.js` 逐条抓取 |
+| `corpus.py` | 四层压缩包的路径、采集日与页面遍历 |
+| `paths.js` | 采集工作目录与浏览器配置目录 |
+| `fetch_baker.py` | 按 `Baker/` 前缀列举并抓取 Baker 命名空间 |
 | `fetch_fz.py` | 按命名空间前缀抓取页面与影片字幕，可离线重展开文本 |
 | `extract_fz.py` | 按页面形态把原样 JSON 展开成文本 |
 | `scan_fz.py` | 在 fz 三层检索三种词形，产出 `evidence/fz_mentions.txt` 与未提名候选表 |
 | `images.js` | 清点条目里的图片地址与所在板块 |
 | `dlimg.js` | 按板块下载承载文字的图片 |
-| `items_all.json` | 森空岛条目清单，字段为条目号、标题、分类与语言 |
-| `baker_titles.txt` | Baker 页标题清单，`fetch_baker.py` 的输入 |
 
 ## 更新语料
 
-森空岛一层依赖 Playwright 与一份无头 Chromium，两者的路径写在 `harvest.js` 与 `bulk.js` 开头，换机器时先改。抓取前清空 `/tmp/skwiki/raw` 与 `/tmp/skwiki/txt`，脚本会跳过已存在的条目。
+森空岛一层依赖 Playwright 与一份无头 Chromium。换机器时先 `npm ci` 安装依赖，缺浏览器再 `npm run install-browser`。`bulk.js` 跳过已存在的条目，清空后才会重抓。
 
 ```bash
+rm -rf work/skland/raw work/skland/txt
 node tools/harvest.js
 node tools/bulk.js
-tar czf "corpus/skland-endfield-wiki_$(date +%F).tar.gz" -C /tmp/skwiki raw txt data
+tar czf "corpus/skland-endfield-wiki_$(date +%F).tar.gz" --hard-dereference -C work/skland raw txt data
 ```
 
-条目清单 `tools/items_all.json` 不由采集脚本生成，需要从 `data/` 里的条目目录接口整理出来，再复制到 `/tmp/skwiki/` 供 `bulk.js`、`analyze.js` 与 `evidence.js` 使用。
-
-fz 的 Baker 层与补抓层由 Python 脚本抓取，产物写在 `tmp/fzwiki/`。
+fz 的 Baker 层与补抓层由 Python 脚本抓取。
 
 ```bash
 python3 tools/fetch_fz.py
@@ -102,13 +96,13 @@ python3 tools/extract_fz.py prts-raw prts-text
 python3 tools/extract_fz.py story-raw story-text
 ```
 
-打包 fz 各层时带上 `--hard-dereference`，三个包各自打包。WSL 挂载的 Windows 盘会给不同文件复用 inode，普通 `tar` 会把一部分 `*-text` 成员存成指向 `*-raw` 里某个 JSON 的硬链接，解出来是别人的正文。
+打包各层时带上 `--hard-dereference`，三个包各自打包。WSL 挂载的 Windows 盘会给不同文件复用 inode，普通 `tar` 会把一部分文本成员存成指向同层 JSON 的硬链接，解出来是别人的正文。
 
 ```bash
-tar czf "corpus/fzwiki-$(date +%F).tar.gz" --hard-dereference --sort=name -C tmp/fzwiki prts-raw prts-text story-raw story-text
+tar czf "corpus/fzwiki-$(date +%F).tar.gz" --hard-dereference --sort=name -C work/fzwiki prts-raw prts-text story-raw story-text
 ```
 
-新包入库后改 `tools/index.py` 与 `tools/scan_fz.py` 顶部的包名，`index.py` 表头与 `evidence.js` 开头那句里的采集日一并改，然后重建索引，按需重跑检索与更新报告，并在 `history.md` 记一条。
+新包入库后改 `tools/corpus.py` 顶部的四个包名，重建索引，按需重跑检索与更新报告，并在 `history.md` 记一条。
 
 ## 已知缺口
 

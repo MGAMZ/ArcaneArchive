@@ -28,7 +28,6 @@
 ## 不许做的事
 
 - 引文必须是语料原文的逐字子串。站内没有的说法就删，或标明取自站外，不软化、不补写。
-- 站外百科与玩家讨论只用于对照，不进正文与引文。
 - 不保留旧快照。新一批入库时替换旧包，`history.md` 记一句上一批停在哪天即可。
 - 不动 README 顶部的横幅、一级标题、剧透警告、版权段与联系邮箱。
 - 不写「本次」「此前」「补采」「改为」这类只在对比上一版时才成立的句子。文档与注释只描述现在。
@@ -38,14 +37,14 @@
 
 ## 改采集或索引时
 
-- 包名与采集日固定在 `tools/index.py`、`tools/scan_fz.py`、`tools/evidence.js` 里，换快照时一并改。
+- 包名固定在 `tools/corpus.py` 里，换快照时改这一处。
 - 同一次改动里同步 README 的更新语料一节与 `history.md`。
-- 打包 fz 各层必须带 `--hard-dereference`，否则文本会变成指向 JSON 的硬链接。
-- 采集脚本的工作目录 `/tmp/skwiki` 是跑通的既有路径，不要为了整洁挪动。
-- `tools/items_all.json` 不由脚本生成，新一批要手工整理后同时放回 `tools/` 与 `/tmp/skwiki/`。
+- 打包各层必须带 `--hard-dereference`，否则文本会变成指向 JSON 的硬链接。
+- 条目清单由 `corpus/` 里的三份目录接口现读，Baker 标题由接口按前缀列举。
 
 ## 交付前
 
 - `python3 tools/index.py` 重建索引，产物应与仓内文件逐字相同。
-- `node tools/analyze.js`、`node tools/evidence.js`、`python3 tools/scan_fz.py` 重跑，产物应与仓内证据文件逐字相同。
+- `python3 tools/analyze.py` 只打印命中概况。
+- `python3 tools/evidence.py`、`python3 tools/scan_fz.py` 重跑，产物应与仓内证据文件逐字相同。
 - 文档里的命令先跑通再写。

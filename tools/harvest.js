@@ -1,18 +1,15 @@
 const fs = require('fs');
 const path = require('path');
-const PW = '/home/mgam/.npm/_npx/e41f203b7505f1fb/node_modules/playwright-core';
-const { chromium } = require(PW);
+const { chromium } = require('playwright');
+const { WORK, PROFILE } = require('./paths.js');
 
-const EXE = '/home/mgam/.cache/ms-playwright/chromium-1243/chrome-linux64/chrome';
-const PROFILE = '/tmp/skwiki/profile';
-const OUT = '/tmp/skwiki/data';
+const OUT = path.join(WORK, 'data');
 fs.mkdirSync(OUT, { recursive: true });
 
 const START = 'https://wiki.skland.com/endfield?header=0';
 
 async function openContext() {
   const ctx = await chromium.launchPersistentContext(PROFILE, {
-    executablePath: EXE,
     headless: true,
     locale: 'zh-CN',
     viewport: { width: 1600, height: 1000 },
