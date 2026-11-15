@@ -25,7 +25,7 @@ python3 tools/index.py
 
 `tools/index.py` 重建 `data/source_index.tsv`，`tools/evidence.py` 写 `evidence/evidence_mentions.txt`。
 
-要在本地按条目打开森空岛的正文，解包一份。解包与抓取的产物都在仓内 `work/` 下，不入库，清掉后重跑对应命令即可重建，持久副本是 `corpus/` 的四份压缩包。
+要在本地按条目打开森空岛的正文，解包一份。解包与抓取的产物都在仓内 `work/` 下，不入库，清掉后重跑对应命令即可重建，持久副本是 `corpus/` 的五份压缩包。
 
 ```bash
 mkdir -p work/skland
@@ -34,16 +34,19 @@ tar xzf corpus/skland-endfield-wiki_*.tar.gz -C work/skland
 
 ## 数据
 
-语料分四层，各存一份带采集日的压缩包。
+语料分五层，各存一份带采集日的压缩包。
 
 - `corpus/skland-endfield-wiki_<采集日>.tar.gz`：森空岛终末地 wiki 的全站条目，含条目详情接口的原样 JSON、同名纯文本与采集时截获的列表接口。
 - `corpus/fzwiki-<采集日>.tar.gz`：fz.wiki 的 PRTS 记录与任务、干员、活动页面。
 - `corpus/fzwiki-baker-<采集日>.tar.gz`：fz.wiki 的 Baker 命名空间，游戏内通讯软件的事件群聊与干员频道。
 - `corpus/fzwiki-supplement-<采集日>.tar.gz`：fz.wiki 的环带纪略、影片、物品、装备、武器、蚀刻章、研报词典与游戏动态。
+- `corpus/fzwiki-voices-<采集日>.tar.gz`：fz.wiki 干员页的角色语音，现收诀与祀的中文配音，无损 FLAC。
 
-`*-raw/` 存接口原样 JSON，`*-text/` 存展开后的纯文本，森空岛一层对应的目录名是 `raw/` 与 `txt/`。纯文本保留原页层级，图片只留 `[image]` 占位，图上的文字另见 `evidence/ocr_transcripts.md`。
+页面层的 `*-raw/` 存接口原样 JSON，`*-text/` 存展开后的纯文本，森空岛一层对应的目录名是 `raw/` 与 `txt/`。纯文本保留原页层级，图片只留 `[image]` 占位，图上的文字另见 `evidence/ocr_transcripts.md`。
 
-`data/source_index.tsv` 把四层合到一张表，列依次为 `source`、`key`、`title`、`category`、`corpus`、`member`、`url`。时间线每条证据的 `source` 与 `id` 就是前两列，凭这两列可以找到包内路径与原页面地址。
+语音层按角色分层。`voices/<角色>/index.json` 记页面修订号、采集日与每条语音的顺序、场景、解锁条件、文本、时长和音频路径，`voices/<角色>/audio/<语言>/<序号>_<场景>.flac` 是音频本体，序号与索引一致，语言目录现用 `zh`。
+
+`data/source_index.tsv` 把四层页面语料合到一张表，列依次为 `source`、`key`、`title`、`category`、`corpus`、`member`、`url`。时间线每条证据的 `source` 与 `id` 就是前两列，凭这两列可以找到包内路径与原页面地址。
 
 `data/jue_timeline.json` 的 `events` 分世界史、武陵区域史与诀个人史三层，每条含 `year`、`year_label`、`title`、`summary`、`jue_link`、`evidence` 与 `confidence`。`confidence` 分 A、B、C 三级，分级标准写在 `meta` 里。
 
@@ -66,6 +69,7 @@ tar xzf corpus/skland-endfield-wiki_*.tar.gz -C work/skland
 | `paths.js` | 采集工作目录与浏览器配置目录 |
 | `fetch_baker.py` | 按 `Baker/` 前缀列举并抓取 Baker 命名空间 |
 | `fetch_fz.py` | 按命名空间前缀抓取页面与影片字幕，可离线重展开文本 |
+| `fetch_voices.py` | 按干员页抓取角色语音，无损转码为 FLAC 并写角色层索引 |
 | `extract_fz.py` | 按页面形态把原样 JSON 展开成文本 |
 | `scan_fz.py` | 在 fz 三层检索三种词形，产出 `evidence/fz_mentions.txt` 与未提名候选表 |
 | `images.js` | 清点条目里的图片地址与所在板块 |
@@ -89,14 +93,21 @@ python3 tools/fetch_fz.py
 python3 tools/fetch_baker.py
 ```
 
-剧情层的 PRTS 记录与任务、干员、活动没有采集脚本。补抓的页面按 `prts-raw/`、`story-raw/` 一类目录放好后，用 `extract_fz.py` 展开。
+剧情层的 PRTS 记录、任务与活动页没有采集脚本。补抓的页面按 `prts-raw/`、`story-raw/` 一类目录放好后，用 `extract_fz.py` 展开。
 
 ```bash
 python3 tools/extract_fz.py prts-raw prts-text
 python3 tools/extract_fz.py story-raw story-text
 ```
 
-打包各层时带上 `--hard-dereference`，三个包各自打包。WSL 挂载的 Windows 盘会给不同文件复用 inode，普通 `tar` 会把一部分文本成员存成指向同层 JSON 的硬链接，解出来是别人的正文。
+语音层由 `fetch_voices.py` 按角色抓取页面与中文配音，转码与索引一并写出。
+
+```bash
+python3 tools/fetch_voices.py --character 诀
+tar czf "corpus/fzwiki-voices-$(date +%F).tar.gz" --hard-dereference --sort=name -C work voices
+```
+
+打包 fz 各层时带上 `--hard-dereference`，一个包一条命令。WSL 挂载的 Windows 盘会给不同文件复用 inode，普通 `tar` 会把一部分文本成员存成指向同层 JSON 的硬链接，解出来是别人的正文。
 
 ```bash
 tar czf "corpus/fzwiki-$(date +%F).tar.gz" --hard-dereference --sort=name -C work/fzwiki prts-raw prts-text story-raw story-text
